@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="携程一起选多人旅行共同决策增长产品交互原型">
+  <title>携程「一起选」旅游增长项目</title>
+  <style>
+    *{box-sizing:border-box}
+    :root{--blue:#1677ff;--blue2:#0a5bd8;--ink:#182230;--muted:#667085;--line:#e6eaf0;--bg:#f4f7fb;--green:#12a76a;--red:#e5484d;--orange:#ff7a45}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    .project-nav{height:56px;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 16px;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+    .project-nav a{color:#667085;text-decoration:none;font-size:14px;font-weight:700;padding:9px 15px;border-radius:999px;white-space:nowrap}
+    .project-nav a.active{color:#fff;background:var(--blue);box-shadow:0 6px 16px rgba(22,119,255,.22)}
+    .page{min-height:calc(100vh - 56px);display:grid;grid-template-columns:minmax(420px,1fr) 440px;gap:36px;max-width:1240px;margin:0 auto;padding:42px 28px 54px;align-items:start}
+    .story{position:sticky;top:90px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:#eaf3ff;color:var(--blue2);font-size:12px;font-weight:800;letter-spacing:.04em}
+    .eyebrow:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blue)}
+    h1{font-size:clamp(34px,4.3vw,58px);line-height:1.05;margin:20px 0 18px;letter-spacing:-.045em;max-width:760px}
+    .lead{font-size:17px;line-height:1.85;color:var(--muted);max-width:690px;margin:0 0 28px}
+    .steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 22px}
+    .step{border:1px solid var(--line);background:rgba(255,255,255,.82);border-radius:16px;padding:14px;text-align:left;min-height:84px;transition:.2s}
+    .step:hover{transform:translateY(-2px);border-color:#b9d5ff}
+    .step.active{border-color:var(--blue);background:#edf5ff;box-shadow:0 8px 22px rgba(22,119,255,.11)}
+    .step b{display:flex;align-items:center;gap:8px;font-size:14px;margin-bottom:6px}
+    .step i{font-style:normal;width:23px;height:23px;border-radius:8px;background:#e8edf5;display:grid;place-items:center;color:#536173;font-size:12px}
+    .step.active i{background:var(--blue);color:#fff}
+    .step span{font-size:12px;line-height:1.45;color:var(--muted)}
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .metric{background:#fff;border:1px solid var(--line);padding:15px;border-radius:16px}
+    .metric strong{font-size:15px;display:block;margin-bottom:4px}.metric span{font-size:12px;color:var(--muted)}
+    .note{color:#8893a2;font-size:12px;line-height:1.6;margin-top:16px}
+    .phone-wrap{display:flex;justify-content:center}
+    .phone{width:390px;min-height:780px;border:9px solid #111827;border-radius:42px;background:#fff;overflow:hidden;box-shadow:0 28px 80px rgba(16,24,40,.24);position:relative}
+    .statusbar{height:27px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:11px;font-weight:800;background:#fff}
+    .appbar{height:59px;display:grid;grid-template-columns:42px 1fr 42px;align-items:center;padding:0 13px;border-bottom:1px solid #f0f2f5;background:#fff;position:relative;z-index:2}
+    .appbar .back,.appbar .reset{border:0;background:transparent;color:#667085;padding:8px;border-radius:10px}
+    .appbar .back{font-size:26px;line-height:1}.appbar .reset{font-size:12px}
+    .apptitle{text-align:center}.apptitle strong{display:block;font-size:15px}.apptitle span{display:block;font-size:10px;color:#98a2b3;margin-top:2px}
+    .screen{padding:18px 17px 94px;min-height:685px;background:linear-gradient(#f8fbff,#fff 210px)}
+    .screen h2{font-size:22px;line-height:1.3;margin:2px 0 7px;letter-spacing:-.02em}.screen h3{font-size:16px;margin:18px 0 10px}.sub{margin:0;color:#667085;font-size:13px;line-height:1.6}
+    .date-card{display:grid;grid-template-columns:1fr 32px 1fr;background:#fff;border:1px solid var(--line);border-radius:17px;padding:13px;margin:16px 0;box-shadow:0 5px 16px rgba(16,24,40,.04)}
+    .date-card small{display:block;color:#98a2b3;font-size:10px}.date-card b{font-size:13px;margin-top:4px;display:block}.arrow{display:grid;place-items:center;color:#98a2b3}
+    .section-row{display:flex;justify-content:space-between;align-items:center;margin:15px 0 10px}.section-row h3{margin:0}.counter{font-size:11px;color:var(--blue);background:#edf5ff;padding:5px 8px;border-radius:999px}
+    .hotel{position:relative;background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px 13px 13px;margin-bottom:11px;box-shadow:0 6px 18px rgba(16,24,40,.05);transition:.2s}
+    .hotel.selected{border-color:var(--blue);box-shadow:0 7px 20px rgba(22,119,255,.12)}
+    .hotel-top{display:flex;gap:11px}.hotel-img{width:80px;height:72px;border-radius:13px;background:linear-gradient(135deg,#69aaff,#0e58c8);display:grid;place-items:center;color:#fff;font-size:28px;flex:none}.hotel:nth-of-type(2) .hotel-img{background:linear-gradient(135deg,#ffc36b,#e96b33)}.hotel:nth-of-type(3) .hotel-img{background:linear-gradient(135deg,#6dd9bd,#168b83)}
+    .hotel-info{min-width:0;flex:1}.hotel-info small{display:block;color:#98a2b3;font-size:10px}.hotel-info h4{font-size:14px;margin:4px 0 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rating{font-size:11px;color:var(--orange);font-weight:700}.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.tag{font-size:9px;color:#536173;background:#f2f4f7;padding:4px 6px;border-radius:6px}
+    .price-row{display:flex;align-items:end;justify-content:space-between;margin-top:10px;color:#667085;font-size:10px}.price{color:#f04438;font-size:18px;font-weight:800}.pick{position:absolute;right:11px;top:11px;width:29px;height:29px;border-radius:50%;border:1px solid #cfd6e1;background:#fff;color:#98a2b3;font-size:17px}.selected .pick{border-color:var(--blue);background:var(--blue);color:#fff}
+    .sticky-cta{position:absolute;left:0;right:0;bottom:0;padding:13px 16px 18px;background:linear-gradient(transparent,#fff 22%,#fff);z-index:3}.primary{width:100%;height:48px;border:0;border-radius:15px;color:#fff;background:linear-gradient(135deg,var(--blue),var(--blue2));font-weight:800;box-shadow:0 9px 22px rgba(22,119,255,.24)}.primary:disabled{background:#cbd3df;box-shadow:none;cursor:not-allowed}.secondary{height:42px;border:1px solid #cfe0f8;background:#fff;color:var(--blue2);border-radius:13px;font-weight:700;padding:0 15px}
+    .field{margin:15px 0}.field label{font-size:12px;font-weight:700;display:block;margin-bottom:7px}.field input{width:100%;height:45px;border:1px solid var(--line);border-radius:13px;padding:0 13px;color:var(--ink);background:#fff;outline:none}.field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #e8f2ff}
+    .choice-row{display:flex;gap:7px;flex-wrap:wrap}.choice{border:1px solid var(--line);background:#fff;color:#596579;border-radius:11px;padding:9px 12px;font-size:12px}.choice.active{border-color:var(--blue);color:var(--blue);background:#edf5ff;font-weight:700}
+    .selected-summary{background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px;display:flex;justify-content:space-between;align-items:center;margin-top:15px}.selected-summary small{display:block;color:#98a2b3;margin-bottom:3px}.selected-summary b{font-size:20px}.avatars{display:flex;margin-top:13px}.avatar{width:34px;height:34px;border-radius:50%;background:#dce9ff;color:#215fa8;border:2px solid #fff;display:grid;place-items:center;font-size:11px;margin-right:-5px}.avatar.empty{background:#f1f3f6;color:#98a2b3}
+    .hint{font-size:11px;color:#7b8798;line-height:1.6;background:#f6f8fb;padding:10px 11px;border-radius:12px;margin-top:14px}
+    .hero-icon{width:66px;height:66px;border-radius:22px;display:grid;place-items:center;background:linear-gradient(135deg,#e7f1ff,#d8eaff);font-size:31px;margin:4px auto 12px}.center{text-align:center}
+    .invite-card{border-radius:18px;background:linear-gradient(145deg,#0d72ed,#0647aa);color:#fff;padding:17px;margin:18px 0;box-shadow:0 13px 30px rgba(16,89,188,.26)}.invite-card small{opacity:.75}.invite-card h3{margin:7px 0 8px}.invite-card p{font-size:12px;line-height:1.55;opacity:.88;margin:0}.invite-meta{display:flex;gap:7px;margin-top:13px}.invite-meta span{font-size:9px;background:rgba(255,255,255,.16);padding:5px 7px;border-radius:999px}
+    .share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.share{border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px 5px;color:#475467;font-size:11px}.share b{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;margin:0 auto 7px;background:#eef5ff;color:var(--blue);font-size:14px}
+    .inviter{display:inline-flex;align-items:center;gap:7px;background:#eef5ff;color:#245c9e;padding:6px 9px;border-radius:999px;font-size:11px;margin-bottom:10px}.voting-card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:13px;margin:12px 0}.voting-card h4{font-size:14px;margin:0 0 7px}.voting-card p{font-size:11px;color:#667085;line-height:1.55;margin:3px 0}.vote-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}.vote{height:38px;border-radius:11px;border:1px solid var(--line);background:#fff;color:#667085;font-size:11px;font-weight:700}.vote.want.active{border-color:var(--green);background:#ecfbf4;color:var(--green)}.vote.no.active{border-color:var(--red);background:#fff0f0;color:var(--red)}
+    .progress-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:16px}.progress-head{display:flex;justify-content:space-between;align-items:center}.progress-head b{font-size:22px}.bar{height:9px;background:#edf0f4;border-radius:999px;overflow:hidden;margin:11px 0 15px}.bar i{display:block;height:100%;width:75%;background:linear-gradient(90deg,var(--blue),#60a5fa);border-radius:inherit}.member{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #f0f2f5;font-size:12px}.member:first-of-type{border-top:0}.member .avatar{margin:0}.member span{flex:1}.done{color:var(--green);font-weight:700}.waiting{color:#98a2b3}
+    .result-card{background:linear-gradient(145deg,#fff,#eef6ff);border:1px solid #bfd9ff;border-radius:20px;padding:17px;margin-top:16px;box-shadow:0 10px 26px rgba(22,119,255,.12)}.rank{font-size:10px;color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.08em}.result-card h3{margin:7px 0 5px;font-size:18px}.result-card .amount{font-size:24px;color:#f04438;font-weight:900;margin:12px 0}.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.score{background:#fff;border-radius:11px;padding:9px;text-align:center}.score b{display:block;font-size:15px}.score span{font-size:9px;color:#98a2b3}.reason{background:#f6f9fe;color:#536173;border-radius:13px;padding:11px;font-size:11px;line-height:1.6;margin-top:12px}
+    .toast{position:absolute;left:50%;bottom:84px;transform:translate(-50%,14px);background:#172033;color:#fff;border-radius:999px;padding:9px 14px;font-size:11px;opacity:0;pointer-events:none;transition:.2s;z-index:9;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}
+    .modal{display:none;position:absolute;inset:0;background:rgba(17,24,39,.46);z-index:20;align-items:end}.modal.show{display:flex}.sheet{width:100%;background:#fff;border-radius:25px 25px 0 0;padding:24px 20px 28px;text-align:center}.success{width:58px;height:58px;border-radius:50%;background:#e8faf2;color:var(--green);display:grid;place-items:center;font-size:27px;margin:0 auto 11px}.sheet h3{margin:0 0 7px}.sheet p{color:#667085;font-size:12px;line-height:1.6;margin:0 0 16px}
+    .footer-note{text-align:center;font-size:9px;color:#b0b8c4;margin-top:18px;letter-spacing:.12em}
+    @media(max-width:900px){.page{grid-template-columns:1fr;padding:28px 16px 48px}.story{position:static}.phone{width:min(390px,100%)}.steps{grid-template-columns:1fr 1fr}.metrics{grid-template-columns:1fr}.project-nav{justify-content:flex-start;overflow:auto}.project-nav a{font-size:12px}.phone-wrap{margin-top:6px}}
+    @media(max-width:520px){h1{font-size:36px}.steps{grid-template-columns:1fr}.page{padding-left:10px;padding-right:10px}.phone{border-width:5px;border-radius:34px;min-height:760px}.story{padding:0 6px}.project-nav{height:54px}.project-nav a{padding:8px 10px}}
+  </style>
+</head>
+<body>
+  <nav class="project-nav" aria-label="增长项目切换">
+    <a href="./">小说增长项目 · 书荒急救站</a>
+    <a class="active" href="./tourism.html">旅游增长项目 · 一起选</a>
+  </nav>
+  <main class="page">
+    <section class="story" aria-label="项目说明">
+      <span class="eyebrow">增长产品作品集 · 交互原型</span>
+      <h1>把群聊里的纠结，变成一次共同决定</h1>
+      <p class="lead">携程「一起选」连接酒店浏览、同行人邀请、共同投票与下单，把原本散落在群聊中的决策过程带回旅行 App，兼顾站外拉新、协作效率与交易转化。</p>
+      <div class="steps" id="steps">
+        <button class="step active" data-screen="list"><b><i>1</i>选择候选酒店</b><span>从浏览场景自然进入一起选</span></button>
+        <button class="step" data-screen="create"><b><i>2</i>创建共同选择</b><span>设置成员、截止时间与候选项</span></button>
+        <button class="step" data-screen="share"><b><i>3</i>邀请同行人</b><span>分享带来站外拉新机会</span></button>
+        <button class="step" data-screen="vote"><b><i>4</i>投票与表达反对</b><span>同时收集偏好和排斥项</span></button>
+        <button class="step" data-screen="progress"><b><i>5</i>查看协作进度</b><span>提醒未完成成员及时参与</span></button>
+        <button class="step" data-screen="result"><b><i>6</i>形成结果并预订</b><span>用共识缩短交易决策路径</span></button>
+      </div>
+      <div class="metrics">
+        <div class="metric"><strong>分享率</strong><span>衡量传播效率</span></div>
+        <div class="metric"><strong>投票完成率</strong><span>衡量协作效率</span></div>
+        <div class="metric"><strong>预订转化率</strong><span>衡量业务结果</span></div>
+      </div>
+      <p class="note">点击流程步骤可直接跳转，也可以在右侧手机原型中完成整条流程。本项目为个人模拟产品方案，不代表携程官方功能。</p>
+    </section>
+
+    <section class="phone-wrap" aria-label="移动端交互原型">
+      <div class="phone">
+        <div class="statusbar"><span>9:41</span><span>● ◔ ▰</span></div>
+        <header class="appbar">
+          <button class="back" id="back" aria-label="返回">‹</button>
+          <div class="apptitle"><strong id="appTitle">成都酒店</strong><span id="appSub">10月2日—10月5日 · 4人</span></div>
+          <button class="reset" id="reset">重置</button>
+        </header>
+        <div id="screen" class="screen"></div>
+        <div class="toast" id="toast">已完成</div>
+        <div class="modal" id="modal">
+          <div class="sheet"><div class="success">✓</div><h3>预订流程已承接</h3><p>共同决策已转化为订单意向。本原型在此展示增长闭环，不产生真实交易。</p><button class="primary" id="closeModal">完成演示</button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const hotels=[
+      {id:1,name:'成都太古里云际酒店',loc:'春熙路 · 距地铁320m',rating:'4.8 超棒',tags:['位置最佳','免费取消','双早'],room:'豪华双床房 · 2间',price:'598',icon:'🏙️'},
+      {id:2,name:'宽窄巷子庭院酒店',loc:'宽窄巷子 · 步行8分钟',rating:'4.7 很棒',tags:['特色庭院','含早餐'],room:'雅致双床房 · 2间',price:'528',icon:'🏯'},
+      {id:3,name:'天府广场景观酒店',loc:'天府广场 · 屋顶泳池',rating:'4.6 很棒',tags:['泳池夜景','近地铁'],room:'城景双床房 · 2间',price:'668',icon:'🌆'}
+    ];
+    const order=['list','create','share','vote','progress','result'];
+    let state={screen:'list',selected:new Set([1,2]),votes:{},people:4,deadline:'明晚 22:00'};
+    const screen=document.querySelector('#screen'),title=document.querySelector('#appTitle'),sub=document.querySelector('#appSub'),toast=document.querySelector('#toast');
+    function top(t,s){title.textContent=t;sub.textContent=s}
+    function flash(message){toast.textContent=message;toast.classList.add('show');clearTimeout(flash.t);flash.t=setTimeout(()=>toast.classList.remove('show'),1500)}
+    function go(name){state.screen=name;render();document.querySelectorAll('.step').forEach(x=>x.classList.toggle('active',x.dataset.screen===name));}
+    function hotelCard(h){const on=state.selected.has(h.id);return `<article class="hotel ${on?'selected':''}"><button class="pick" data-pick="${h.id}" aria-label="${on?'移除':'选择'}${h.name}">${on?'✓':'＋'}</button><div class="hotel-top"><div class="hotel-img">${h.icon}</div><div class="hotel-info"><small>${h.loc}</small><h4>${h.name}</h4><span class="rating">${h.rating}</span><div class="tags">${h.tags.map(x=>`<span class="tag">${x}</span>`).join('')}</div></div></div><div class="price-row"><span>${h.room}</span><span><b class="price">¥${h.price}</b>/晚</span></div></article>`}
+    function renderList(){top('成都酒店','10月2日—10月5日 · 4人');screen.innerHTML=`<h2>住得舒服，也要大家都满意</h2><p class="sub">先选出 2—3 家候选酒店，再邀请同行人一起决定。</p><div class="date-card"><div><small>入住</small><b>10月2日 周五</b></div><div class="arrow">→</div><div><small>离店</small><b>10月5日 周一</b></div></div><div class="section-row"><h3>为你推荐</h3><span class="counter">已选 ${state.selected.size}/3</span></div>${hotels.map(hotelCard).join('')}<div class="sticky-cta"><button class="primary" id="createBtn" ${state.selected.size<2?'disabled':''}>创建一起选（已选${state.selected.size}家）</button></div><div class="footer-note">CONCEPT PROTOTYPE</div>`;document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{const id=+b.dataset.pick;if(state.selected.has(id))state.selected.delete(id);else if(state.selected.size<3)state.selected.add(id);else flash('最多选择 3 家候选酒店');renderList()});document.querySelector('#createBtn').onclick=()=>go('create')}
+    function renderCreate(){top('创建一起选','设置这次共同选择');screen.innerHTML=`<div class="field"><label>旅行名称</label><input value="成都毕业旅行酒店投票" aria-label="旅行名称"></div><div class="field"><label>出行日期</label><div class="selected-summary"><span>10月2日—10月5日 · 3晚</span><button class="secondary">修改</button></div></div><div class="field"><label>同行人数</label><div class="choice-row">${[2,4,6,'8+'].map(n=>`<button class="choice ${String(n).startsWith(String(state.people))?'active':''}" data-people="${n}">${n}人</button>`).join('')}</div></div><div class="field"><label>投票截止时间</label><div class="choice-row">${['今晚 22:00','明晚 22:00','自定义'].map(x=>`<button class="choice ${state.deadline===x?'active':''}" data-deadline="${x}">${x}</button>`).join('')}</div></div><div class="selected-summary"><div><small>已选候选酒店</small><b>${state.selected.size}家</b></div><button class="secondary" id="editHotels">修改</button></div><div class="avatars"><span class="avatar">我</span><span class="avatar empty">＋</span><span class="avatar empty">＋</span><span class="avatar empty">＋</span></div><p class="hint">创建后生成同行人邀请卡。未登录用户可以先浏览，提交投票时再登录，降低参与门槛。</p><div class="sticky-cta"><button class="primary" id="inviteBtn">创建并邀请同行人</button></div>`;document.querySelectorAll('[data-people]').forEach(b=>b.onclick=()=>{state.people=b.dataset.people==='8+'?8:+b.dataset.people;renderCreate()});document.querySelectorAll('[data-deadline]').forEach(b=>b.onclick=()=>{state.deadline=b.dataset.deadline;renderCreate()});document.querySelector('#editHotels').onclick=()=>go('list');document.querySelector('#inviteBtn').onclick=()=>{flash('共同选择已创建');setTimeout(()=>go('share'),500)}}
+    function renderShare(){top('邀请同行人','共同选择已创建');screen.innerHTML=`<div class="hero-icon">✈️</div><div class="center"><h2>邀请大家一起选</h2><p class="sub">候选酒店已经准备好，等同行人表达偏好。</p></div><div class="invite-card"><small>携程 · 一起选</small><h3>成都毕业旅行酒店投票</h3><p>我们选了 ${state.selected.size} 家成都酒店，快来投出你最想住的一家。</p><div class="invite-meta"><span>10月2日—10月5日</span><span>${state.deadline}截止</span></div></div><div class="share-grid"><button class="share" data-share="微信好友"><b>微</b>微信好友</button><button class="share" data-share="微信群"><b>群</b>微信群</button><button class="share" data-share="链接"><b>链</b>复制链接</button></div><p class="hint">作品集演示：点击下方按钮，以收到邀请的同行人视角继续体验。</p><div class="sticky-cta"><button class="primary" id="openVote">以同行人视角打开</button></div>`;document.querySelectorAll('[data-share]').forEach(b=>b.onclick=()=>flash(b.dataset.share==='链接'?'邀请链接已复制':`已生成${b.dataset.share}分享卡`));document.querySelector('#openVote').onclick=()=>go('vote')}
+    function voteCard(h){if(!state.selected.has(h.id))return '';const v=state.votes[h.id];return `<article class="voting-card"><h4>${h.name}</h4><p>¥${h.price}/晚 · ${h.rating}</p><p>${h.loc} · ${h.tags[0]}</p><p>3晚2间约 ¥${(+h.price*6).toLocaleString()}</p><div class="vote-actions"><button class="vote want ${v==='want'?'active':''}" data-vote="${h.id}:want">♡ 最想住</button><button class="vote no ${v==='no'?'active':''}" data-vote="${h.id}:no">⊘ 不能接受</button></div></article>`}
+    function renderVote(){top('成都毕业旅行','同行人投票页 · 明晚22:00截止');screen.innerHTML=`<span class="inviter">周丹邀请你参与</span><h2>成都毕业旅行酒店投票</h2><p class="sub">10月2日—10月5日 · ${state.people}人 · 请选择偏好</p><p class="hint">每家酒店都可以选择“最想住”或“不能接受”。</p>${hotels.map(voteCard).join('')}<div class="sticky-cta"><button class="primary" id="submitVote" ${Object.keys(state.votes).length?'':'disabled'}>提交选择</button></div>`;document.querySelectorAll('[data-vote]').forEach(b=>b.onclick=()=>{const [id,v]=b.dataset.vote.split(':');state.votes[id]=state.votes[id]===v?null:v;if(!state.votes[id])delete state.votes[id];renderVote()});document.querySelector('#submitVote').onclick=()=>{flash('你的选择已提交');setTimeout(()=>go('progress'),500)}}
+    function renderProgress(){top('投票进度','成都毕业旅行');screen.innerHTML=`<h2>还差 1 人完成</h2><p class="sub">及时提醒同行人，避免共同选择停滞。</p><div class="progress-card"><div class="progress-head"><span>完成进度</span><b>3/4</b></div><div class="bar"><i></i></div><div class="member"><span class="avatar">周</span><span>周丹</span><b class="done">已完成</b></div><div class="member"><span class="avatar">你</span><span>我</span><b class="done">已完成</b></div><div class="member"><span class="avatar">林</span><span>林然</span><b class="done">已完成</b></div><div class="member"><span class="avatar empty">陈</span><span>陈屿</span><b class="waiting">待投票</b></div></div><button class="secondary" id="remind" style="width:100%;margin-top:12px">提醒未完成人</button><p class="hint">增长机会：用轻量提醒提升投票完成率，并在全员完成后自动推送结果，召回用户进入预订环节。</p><div class="sticky-cta"><button class="primary" id="finishAll">模拟全员完成，查看结果</button></div>`;document.querySelector('#remind').onclick=()=>flash('已发送轻提醒');document.querySelector('#finishAll').onclick=()=>go('result')}
+    function renderResult(){top('共同选择结果','4人已全部完成');screen.innerHTML=`<div class="hero-icon">🎉</div><div class="center"><h2>大家选好了</h2><p class="sub">基于偏好、反对票与当前房态生成结果</p></div><article class="result-card"><span class="rank">共同选择 No.1</span><h3>成都太古里云际酒店</h3><p class="sub">豪华双床房 · 2间 · 3晚</p><div class="amount">¥3,588</div><div class="score-grid"><div class="score"><b>3票</b><span>最想住</span></div><div class="score"><b>0票</b><span>不能接受</span></div><div class="score"><b>4.8</b><span>用户评分</span></div></div></article><div class="reason"><b>推荐理由：</b>3 位同行人选择“最想住”，无人反对；位置更接近本次行程的主要景点，且支持免费取消。</div><div class="sticky-cta"><button class="primary" id="bookNow">¥3,588 立即预订</button></div>`;document.querySelector('#bookNow').onclick=()=>document.querySelector('#modal').classList.add('show')}
+    function render(){({list:renderList,create:renderCreate,share:renderShare,vote:renderVote,progress:renderProgress,result:renderResult})[state.screen]()}
+    document.querySelectorAll('.step').forEach(b=>b.onclick=()=>go(b.dataset.screen));
+    document.querySelector('#back').onclick=()=>{const i=order.indexOf(state.screen);if(i>0)go(order[i-1]);else flash('已在第一步')};
+    document.querySelector('#reset').onclick=()=>{state={screen:'list',selected:new Set([1,2]),votes:{},people:4,deadline:'明晚 22:00'};go('list');flash('原型已重置')};
+    document.querySelector('#closeModal').onclick=()=>{document.querySelector('#modal').classList.remove('show');flash('演示完成')};
+    render();
+  </script>
+</body>
+</html>
